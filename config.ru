@@ -1,4 +1,4 @@
-require 'iircy'
+require 'app'
 
 run Sinatra::Application
 
