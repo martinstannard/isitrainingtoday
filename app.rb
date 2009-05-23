@@ -5,43 +5,61 @@ require 'hpricot'
 require 'open-uri'
 
 helpers do
-  
+
   def scrape_weather
     cities = {}
     open('http://www.bom.gov.au') do |f|
       doc = Hpricot(f.read)
       elements = (doc/'#pad table:nth-child(4)')
       (elements/'tr').each do |e|
-        city  = (e/'a').html
+        city  = (e/'a').html.downcase
         cities[city] = (e/'td:nth-child(3)').html unless city.size == 0
       end
     end
     cities
   end
 
+  def nav(cities)
+    menu = '<ul>'
+    cities.each do |c,r|
+      menu << "<li><a href=\"#{c}\">#{c}<a></li>"
+    end
+    menu << "</ul>"
+  end
+
 end
 
+
 get '/' do
+  redirect '/Sydney'
+end
+
+get '/:name' do
+  city = params[:name]
   cities = scrape_weather
-  rain = cities['Sydney']
+  rain = cities[city]
+  puts "rain #{rain}"
+  puts "city #{city}"
   rain =~ /(\d+\.\d+)/
-  raining = $1.to_i > 0.0
-  if raining
+  puts $1.to_f
+  if $1.to_f > 0.0
     @big = 'FUCK YES'
   else
     @big = 'HELL NO'
   end
-  @small = rain + ' since 9 a.m.'
+  @small = city + ' ' + rain + ' since 9 a.m.'
+  @nav = nav cities
   haml :index, :options => {:format => :html5,
-                            :attr_wrapper => '"'}
+    :attr_wrapper => '"'}
 end
 
 __END__
-  
+
 @@ index
 %div
   %h1= @big
   %p= @small
+  = @nav
 
 @@ layout
 !!!
@@ -52,5 +70,7 @@ __END__
     %style{:type => "text/css", :media => "screen"}
       div {font: 700 1em helvetica,"helvetica neue", arial, sans-serif; margin: 0; padding: 220px 0 0 0; text-align: center;}
       h1 {font-size: 160px; padding: 0;margin: 0;}
+      ul {list-style-type: none; font-size: 0.5em}
+      li {display: inline; padding: 2px;}
   %body
     = yield
