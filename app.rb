@@ -31,17 +31,14 @@ end
 
 
 get '/' do
-  redirect '/Sydney'
+  redirect '/sydney'
 end
 
 get '/:name' do
   city = params[:name]
   cities = scrape_weather
   rain = cities[city]
-  puts "rain #{rain}"
-  puts "city #{city}"
   rain =~ /(\d+\.\d+)/
-  puts $1.to_f
   if $1.to_f > 0.0
     @big = 'FUCK YES'
   else
