@@ -1,10 +1,37 @@
 require 'rubygems'
 require 'sinatra'
 require 'haml'
+require 'hpricot'
+require 'open-uri'
+
+helpers do
+  
+  def scrape_weather
+    cities = {}
+    open('http://www.bom.gov.au') do |f|
+      doc = Hpricot(f.read)
+      elements = (doc/'#pad table:nth-child(4)')
+      (elements/'tr').each do |e|
+        city  = (e/'a').html
+        cities[city] = (e/'td:nth-child(3)').html unless city.size == 0
+      end
+    end
+    cities
+  end
+
+end
 
 get '/' do
-  @big = 'FUCK YES'
-  @small = ''
+  cities = scrape_weather
+  rain = cities['Sydney']
+  rain =~ /(\d+\.\d+)/
+  raining = $1.to_i > 0.0
+  if raining
+    @big = 'FUCK YES'
+  else
+    @big = 'HELL NO'
+  end
+  @small = rain + ' since 9 a.m.'
   haml :index, :options => {:format => :html5,
                             :attr_wrapper => '"'}
 end
