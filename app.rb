@@ -29,7 +29,6 @@ helpers do
 
 end
 
-
 get '/' do
   redirect '/sydney'
 end
@@ -44,7 +43,7 @@ get '/:name' do
   else
     @big = 'HELL NO'
   end
-  @small = city + ' ' + rain + ' since 9 a.m.'
+  @small = city + ' ' + rain + ' since 9 a.m.<br>a <a href="http://bivou.ac">bivou.ac</a> service'
   @nav = nav cities
   haml :index, :options => {:format => :html5,
     :attr_wrapper => '"'}
