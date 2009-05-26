@@ -71,6 +71,6 @@ __END__
       h1 {font-size: 160px; padding: 0;margin: 0;}
       ul {list-style-type: none; font-size: 0.5em}
       li {display: inline; padding: 2px;}
-      p.plug {font-size: 0.35em}
+      p.plug {font-size: 0.5em}
   %body
     = yield
