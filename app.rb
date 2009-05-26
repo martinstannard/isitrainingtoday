@@ -43,8 +43,9 @@ get '/:name' do
   else
     @big = 'HELL NO'
   end
-  @small = city + ' ' + rain + ' since 9 a.m.<br>a <a href="http://bivou.ac">bivou.ac</a> service'
+  @small = city + ' ' + rain + ' since 9 a.m.'
   @nav = nav cities
+  @plug = 'a <a href="http://bivou.ac">bivou.ac</a> service'
   haml :index, :options => {:format => :html5,
     :attr_wrapper => '"'}
 end
@@ -56,6 +57,8 @@ __END__
   %h1= @big
   %p= @small
   = @nav
+  %p.plug
+    = @plug
 
 @@ layout
 !!!
@@ -68,5 +71,6 @@ __END__
       h1 {font-size: 160px; padding: 0;margin: 0;}
       ul {list-style-type: none; font-size: 0.5em}
       li {display: inline; padding: 2px;}
+      p.plug {font-size: 0.35em}
   %body
     = yield
